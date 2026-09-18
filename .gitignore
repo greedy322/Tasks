@@ -362,5 +362,12 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
+# Visual Studio Solution file
 *.sln
+
+# GitHub configuration folder
 .github/
+
+# Visual C++ project files
+*.vcxproj
+*.vcxproj.filters
