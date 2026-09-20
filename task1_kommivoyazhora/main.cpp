@@ -1,30 +1,37 @@
 #include <iostream>
-#include <locale.h>
 #include "SalesmanProblem.h"
 
-using namespace std;
-
-int main() 
+int main()
 {
-    setlocale(LC_ALL, "rus");
     const int num_cities = 5;
     const int start_city = 0;
 
-    int** matrix = AllocateMatrix(num_cities);
-    FillRandomMatrix(matrix, num_cities, 10, 99);
+    int** matrix = NewMatrix(num_cities);
+    FillMatrix(matrix, num_cities, 10, 99);
 
-    cout << "Выполнение алгоритма для " << num_cities << " городов:\n";
-    ExactResult result = SolveExactTsp(matrix, num_cities, start_city);
+    std::cout << "Testing algorithm for " << num_cities << " cities:\n";
+    ExactRes exact = SolveExact(matrix, num_cities, start_city);
 
-    cout << "Лучшая стоимость: " << result.best_cost << "\n";
-    cout << "Худшая стоимость: " << result.worst_cost << "\n";
-    cout << "Оптимальный маршрут: ";
-
-    for (int i = 0; i < result.path_size; ++i)
-        cout << result.best_path[i] << (i + 1 < result.path_size ? " -> " : "\n");
+    std::cout << "Best cost: " << exact.best_cost << "\n";
+    std::cout << "Worst cost: " << exact.worst_cost << "\n";
+    std::cout << "Optimal route: ";
+    for (int i = 0; i < exact.path_size; ++i)
+        std::cout << exact.best_path[i] << (i + 1 < exact.path_size ? " -> " : "\n");
     
 
-    FreeExactResult(result);
+    std::cout << "\nTesting Neighbor heuristic:\n";
+    HeurRes heur = SolveNN(matrix, num_cities, start_city);
+
+    std::cout << "Heuristic cost: " << heur.cost << "\n";
+    std::cout << "Heuristic route: ";
+    for (int i = 0; i < heur.path_size; ++i)
+    {
+        std::cout << heur.path[i]
+            << (i + 1 < heur.path_size ? " -> " : "\n");
+    }
+
+    FreeExact(exact);
+    FreeHeur(heur);
     FreeMatrix(matrix, num_cities);
 
     return 0;

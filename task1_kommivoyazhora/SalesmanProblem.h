@@ -1,7 +1,7 @@
 #pragma once
 
 
-struct ExactResult 
+struct ExactRes
 {
 	int best_cost;
 	int worst_cost;
@@ -9,15 +9,21 @@ struct ExactResult
 	int path_size;
 };
 
+struct HeurRes
+{
+	int cost;
+	int* path;
+	int path_size;
+};
 
-int** AllocateMatrix(int num_cities);
+
+int** NewMatrix(int num_cities);
 void FreeMatrix(int** matrix, int num_cities);
+void FillMatrix(int** matrix, int num_cities, int min_cost, int max_cost);
 
 
-void FillRandomMatrix(int** matrix, int num_cities, int min_cost, int max_cost);
+ExactRes SolveExact(int** matrix, int num_cities, int start_city);
+HeurRes SolveNN(int** matrix, int num_cities, int start_city);
 
-
-ExactResult SolveExactTsp(int** matrix, int num_cities, int start_city);
-
-
-void FreeExactResult(ExactResult& result);
+void FreeExact(ExactRes& res);
+void FreeHeur(HeurRes& res);

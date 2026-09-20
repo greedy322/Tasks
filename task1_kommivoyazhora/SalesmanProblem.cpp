@@ -3,15 +3,15 @@
 #include <algorithm>
 #include <random>
 
-const int kInfinity = 2147483647;
+const int kInf = 2147483647;
 
-int** AllocateMatrix(int num_cities) 
+int** NewMatrix(int n)
 {
-    int** matrix = new int* [num_cities];
-    for (int i = 0; i < num_cities; ++i) 
+    int** matrix = new int* [n];
+    for (int i = 0; i < n; ++i) 
     {
-        matrix[i] = new int[num_cities];
-        for (int j = 0; j < num_cities; ++j) 
+        matrix[i] = new int[n];
+        for (int j = 0; j < n; ++j) 
         {
             matrix[i][j] = 0;
         }
@@ -29,7 +29,7 @@ void FreeMatrix(int** matrix, int num_cities)
     delete[] matrix;
 }
 
-void FillRandomMatrix(int** matrix, int num_cities, int min_cost, int max_cost) 
+void FillMatrix(int** matrix, int num_cities, int min_cost, int max_cost)
 {
     std::random_device rd;
     std::mt19937 generator(rd());
@@ -51,13 +51,13 @@ void FillRandomMatrix(int** matrix, int num_cities, int min_cost, int max_cost)
 }
 
 
-ExactResult SolveExactTsp(int** matrix, int num_cities, int start_city) 
+ExactRes SolveExact(int** matrix, int num_cities, int start_city)
 {
     int perm_size = num_cities - 1;
     int* perm = new int[perm_size];
 
     int index = 0;
-    for (int i = 0; i < num_cities; ++i) 
+    for (int i = 0; i < num_cities && index < perm_size; ++i)
     {
         if (i != start_city) 
         {
@@ -67,8 +67,8 @@ ExactResult SolveExactTsp(int** matrix, int num_cities, int start_city)
 
     std::sort(perm, perm + perm_size);
 
-    ExactResult res;
-    res.best_cost = kInfinity;
+    ExactRes  res;
+    res.best_cost = kInf;
     res.worst_cost = -1;
     res.path_size = num_cities + 1;
     res.best_path = new int[res.path_size];
@@ -86,7 +86,7 @@ ExactResult SolveExactTsp(int** matrix, int num_cities, int start_city)
         {
             res.best_cost = current_cost;
             res.best_path[0] = start_city;
-            for (int i = 0; i < perm_size; ++i) 
+            for (int i = 0; i < perm_size && (i + 1) < res.path_size; ++i)
             {
                 res.best_path[i + 1] = perm[i];
             }
@@ -103,11 +103,66 @@ ExactResult SolveExactTsp(int** matrix, int num_cities, int start_city)
     return res;
 }
 
-void FreeExactResult(ExactResult& result) 
+
+HeurRes SolveNN(int** matrix, int num_cities, int start_city)
 {
-    if (result.best_path != nullptr) 
+    bool* visited = new bool[num_cities];
+    for (int i = 0; i < num_cities; ++i) 
     {
-        delete[] result.best_path;
-        result.best_path = nullptr;
+        visited[i] = false;
+    }
+
+    HeurRes res;
+    res.path_size = num_cities + 1;
+    res.path = new int[res.path_size];
+    res.cost = 0;
+
+    int current_city = start_city;
+    visited[current_city] = true;
+    res.path[0] = current_city;
+
+    for (int step = 1; step < num_cities; ++step) 
+    {
+        int nearest_city = -1;
+        int min_distance = kInf;
+
+        for (int next_city = 0; next_city < num_cities; ++next_city) 
+        {
+            if (!visited[next_city] && matrix[current_city][next_city] < min_distance) 
+            {
+                min_distance = matrix[current_city][next_city];
+                nearest_city = next_city;
+            }
+        }
+
+        visited[nearest_city] = true;
+        res.path[step] = nearest_city;
+        res.cost += min_distance;
+        current_city = nearest_city;
+    }
+    
+    res.cost += matrix[current_city][start_city];
+    res.path[res.path_size - 1] = start_city;
+
+    delete[] visited;
+    return res;
+}
+
+
+void FreeExact(ExactRes& res)
+{
+    if (res.best_path != nullptr) 
+    {
+        delete[] res.best_path;
+        res.best_path = nullptr;
+    }
+}
+
+void FreeHeur(HeurRes& res)
+{
+    if (res.path != nullptr) 
+    {
+        delete[] res.path;
+        res.path = nullptr;
     }
 }
