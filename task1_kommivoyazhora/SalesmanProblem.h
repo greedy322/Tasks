@@ -27,3 +27,5 @@ HeurRes SolveNN(int** matrix, int num_cities, int start_city);
 
 void FreeExact(ExactRes& res);
 void FreeHeur(HeurRes& res);
+
+double GetQuality(int best_cost, int worst_cost, int heur_cost);

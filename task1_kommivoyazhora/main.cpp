@@ -1,38 +1,49 @@
+#include <chrono>
 #include <iostream>
 #include "SalesmanProblem.h"
 
-int main()
+int main() 
 {
-    const int num_cities = 5;
-    const int start_city = 0;
+    const int dimensions[] = { 4, 6, 8, 10 };
 
-    int** matrix = NewMatrix(num_cities);
-    FillMatrix(matrix, num_cities, 10, 99);
-
-    std::cout << "Testing algorithm for " << num_cities << " cities:\n";
-    ExactRes exact = SolveExact(matrix, num_cities, start_city);
-
-    std::cout << "Best cost: " << exact.best_cost << "\n";
-    std::cout << "Worst cost: " << exact.worst_cost << "\n";
-    std::cout << "Optimal route: ";
-    for (int i = 0; i < exact.path_size; ++i)
-        std::cout << exact.best_path[i] << (i + 1 < exact.path_size ? " -> " : "\n");
-    
-
-    std::cout << "\nTesting Neighbor heuristic:\n";
-    HeurRes heur = SolveNN(matrix, num_cities, start_city);
-
-    std::cout << "Heuristic cost: " << heur.cost << "\n";
-    std::cout << "Heuristic route: ";
-    for (int i = 0; i < heur.path_size; ++i)
+    for (int d = 0; d < 4; ++d) 
     {
-        std::cout << heur.path[i]
-            << (i + 1 < heur.path_size ? " -> " : "\n");
-    }
+        int n = dimensions[d];
+        std::cout << "Testing " << n << " cities\n";
 
-    FreeExact(exact);
-    FreeHeur(heur);
-    FreeMatrix(matrix, num_cities);
+        for (int run = 1; run <= 3; ++run) 
+        {
+            int** mat = NewMatrix(n);
+            FillMatrix(mat, n, 10, 10000);
+
+            auto t1 = std::chrono::high_resolution_clock::now();
+            ExactRes exact = SolveExact(mat, n, 0);
+            auto t2 = std::chrono::high_resolution_clock::now();
+            auto exact_time =
+                std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+
+            auto t3 = std::chrono::high_resolution_clock::now();
+            HeurRes heur = SolveNN(mat, n, 0);
+            auto t4 = std::chrono::high_resolution_clock::now();
+            auto heur_time =
+                std::chrono::duration_cast<std::chrono::microseconds>(t4 - t3).count();
+
+            double quality = GetQuality(exact.best_cost, exact.worst_cost, heur.cost);
+
+            std::cout << "Run #" << run << ":\n";
+            std::cout << "  Exact: best = " << exact.best_cost
+                << ", worst = " << exact.worst_cost
+                << ", time = " << exact_time << " mcs\n";
+            std::cout << "  NN:    cost = " << heur.cost
+                << ", time = " << heur_time << " mcs\n";
+            std::cout << "  Quality: " << quality << "%\n";
+
+            FreeExact(exact);
+            FreeHeur(heur);
+            FreeMatrix(mat, n);
+        }
+        std::cout << "\n";
+    }
 
     return 0;
 }

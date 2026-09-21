@@ -166,3 +166,16 @@ void FreeHeur(HeurRes& res)
         res.path = nullptr;
     }
 }
+
+double GetQuality(int best_cost, int worst_cost, int heur_cost)
+{
+    if (worst_cost == best_cost) 
+    {
+        return 100.0;
+    }
+    double quality = (static_cast<double>(worst_cost - heur_cost) /
+        static_cast<double>(worst_cost - best_cost)) * 100.0;
+    if (quality < 0.0) return 0.0;
+    if (quality > 100.0) return 100.0;
+    return quality;
+}
