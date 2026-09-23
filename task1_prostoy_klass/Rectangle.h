@@ -8,6 +8,7 @@ public:
 
 
 	void Read();
+	void Print() const;
 
 
 	void SetWidth(double width);
@@ -18,6 +19,17 @@ public:
 	double GetY() const { return y_; }
 	double GetWidth() const { return width_; }
 	double GetHeight() const { return height_; }
+
+	void SetX(double x) { x_ = x; }
+	void SetY(double y) { y_ = y; }
+	void SetWidth(double width);
+	void SetHeight(double height);
+
+	double GetArea() const;
+
+	double GetCircumradius() const;
+
+	bool IsSquare() const;
 
 private:
 	double x_;
