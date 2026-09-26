@@ -15,13 +15,15 @@ public:
 	void SetX(const double x) { x_ = x; }
 	void SetY(const double y) { y_ = y; }
 	void SetWidth(const double width);
-		void SetHeight(const double height);
+	void SetHeight(const double height);
 
 	double GetArea() const;
 
 	double GetCircumradius() const;
 
 	bool IsSquare() const;
+
+	bool IsInFirstQuadrant() const;
 
 private:
 	double x_ = 0.0;
@@ -36,3 +38,5 @@ std::ostream& operator<<(std::ostream& os, const Rectangle& rect);
 Rectangle operator*(const Rectangle& rect, const double scale);
 Rectangle operator*(const double scale, const Rectangle& rect);
 
+bool operator==(const Rectangle& r1, const Rectangle& r2);
+bool operator!=(const Rectangle& r1, const Rectangle& r2);

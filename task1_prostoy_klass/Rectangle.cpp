@@ -55,3 +55,17 @@ Rectangle operator*(const Rectangle& rect, const double scale) {
 Rectangle operator*(const double scale, const Rectangle& rect) {
     return rect * scale;
 }
+
+bool Rectangle::IsInFirstQuadrant() const {
+    return (x_ >= 0.0) && ((y_ - height_) >= 0.0);
+}
+
+bool operator==(const Rectangle& r1, const Rectangle& r2) {
+    const double kEpsilon = 1.0e-9;
+    return (std::abs(r1.GetWidth() - r2.GetWidth()) < kEpsilon) &&
+        (std::abs(r1.GetHeight() - r2.GetHeight()) < kEpsilon);
+}
+
+bool operator!=(const Rectangle& r1, const Rectangle& r2) {
+    return !(r1 == r2);
+}
