@@ -69,3 +69,32 @@ bool operator==(const Rectangle& r1, const Rectangle& r2) {
 bool operator!=(const Rectangle& r1, const Rectangle& r2) {
     return !(r1 == r2);
 }
+
+bool Rectangle::Intersects(const Rectangle& other) const {
+    const double left1 = x_;
+    const double right1 = x_ + width_;
+    const double top1 = y_;
+    const double bottom1 = y_ - height_;
+
+    const double left2 = other.x_;
+    const double right2 = other.x_ + other.width_;
+    const double top2 = other.y_;
+    const double bottom2 = other.y_ - other.height_;
+
+    if (right1 < left2 || right2 < left1 || bottom1 > top2 || bottom2 > top1) {
+        return false;
+    }
+    return true;
+}
+
+bool Rectangle::IntersectsLine(const double a, const double b, const double c) const {
+    const double v1 = a * x_ + b * y_ + c;                              
+    const double v2 = a * (x_ + width_) + b * y_ + c;                    
+    const double v3 = a * x_ + b * (y_ - height_) + c;                  
+    const double v4 = a * (x_ + width_) + b * (y_ - height_) + c;
+
+    const double min_val = std::min(std::min(v1, v2), std::min(v3, v4));
+    const double max_val = std::max(std::max(v1, v2), std::max(v3, v4));
+
+    return (min_val <= 0.0) && (max_val >= 0.0);
+}

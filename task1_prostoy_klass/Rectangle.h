@@ -25,6 +25,10 @@ public:
 
 	bool IsInFirstQuadrant() const;
 
+	bool Intersects(const Rectangle& other) const;
+
+	bool IntersectsLine(const double a, const double b, const double c) const;
+
 private:
 	double x_ = 0.0;
 	double y_ = 0.0;
@@ -40,3 +44,4 @@ Rectangle operator*(const double scale, const Rectangle& rect);
 
 bool operator==(const Rectangle& r1, const Rectangle& r2);
 bool operator!=(const Rectangle& r1, const Rectangle& r2);
+
