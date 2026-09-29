@@ -21,6 +21,7 @@ int** NewMatrix(int num_cities);
 void FreeMatrix(int** matrix, int num_cities);
 void FillMatrix(int** matrix, int num_cities, int min_cost, int max_cost);
 
+bool NextPermutation(int* arr, int size);
 
 ExactRes SolveExact(int** matrix, int num_cities, int start_city);
 HeurRes SolveNN(int** matrix, int num_cities, int start_city);

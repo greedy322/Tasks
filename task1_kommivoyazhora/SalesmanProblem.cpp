@@ -1,9 +1,46 @@
 #include "SalesmanProblem.h"
 
-#include <algorithm>
 #include <random>
 
 const int kInf = 2147483647;
+
+static void Swap(int& a, int& b) {
+    int temp = a;
+    a = b;
+    b = temp;
+}
+
+static void Reverse(int* arr, int left, int right) {
+    while (left < right) {
+        Swap(arr[left], arr[right]);
+        ++left;
+        --right;
+    }
+}
+
+bool NextPermutation(int* arr, int size) {
+    if (size <= 1) return false;
+
+    int i = size - 2;
+    while (i >= 0 && arr[i] >= arr[i + 1]) {
+        --i;
+    }
+    if (i < 0) return false;
+
+ 
+    int j = size - 1;
+    while (arr[j] <= arr[i]) {
+        --j;
+    }
+
+
+    Swap(arr[i], arr[j]);
+
+
+    Reverse(arr, i + 1, size - 1);
+
+    return true;
+}
 
 int** NewMatrix(int n)
 {
@@ -65,8 +102,6 @@ ExactRes SolveExact(int** matrix, int num_cities, int start_city)
         }
     }
 
-    std::sort(perm, perm + perm_size);
-
     ExactRes  res;
     res.best_cost = kInf;
     res.worst_cost = -1;
@@ -97,7 +132,7 @@ ExactRes SolveExact(int** matrix, int num_cities, int start_city)
         {
             res.worst_cost = current_cost;
         }
-    } while (std::next_permutation(perm, perm + perm_size));
+    } while (NextPermutation(perm, perm_size));
 
     delete[] perm;
     return res;
