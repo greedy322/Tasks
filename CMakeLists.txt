@@ -7,3 +7,4 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_subdirectory(task1_kommivoyazhora)
 add_subdirectory(task1_prostoy_klass)
+add_subdirectory(task2_bm_poisk)
