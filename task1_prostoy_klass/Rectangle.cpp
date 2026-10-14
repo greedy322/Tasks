@@ -62,8 +62,20 @@ bool Rectangle::IsInFirstQuadrant() const {
 
 bool operator==(const Rectangle& r1, const Rectangle& r2) {
     const double kEpsilon = 1.0e-9;
-    return (std::abs(r1.GetWidth() - r2.GetWidth()) < kEpsilon) &&
-        (std::abs(r1.GetHeight() - r2.GetHeight()) < kEpsilon);
+    const double dx = r2.GetX() - r1.GetX();
+    const double dy = r2.GetY() - r1.GetY();
+
+    const bool top_right =
+        std::abs((r2.GetX() + r2.GetWidth()) - (r1.GetX() + r1.GetWidth()) - dx) < kEpsilon;
+
+    const bool bottom_left =
+        std::abs((r2.GetY() - r2.GetHeight()) - (r1.GetY() - r1.GetHeight()) - dy) < kEpsilon;
+
+    const bool bottom_right =
+        std::abs((r2.GetX() + r2.GetWidth()) - (r1.GetX() + r1.GetWidth()) - dx) < kEpsilon &&
+        std::abs((r2.GetY() - r2.GetHeight()) - (r1.GetY() - r1.GetHeight()) - dy) < kEpsilon;
+
+    return top_right && bottom_left && bottom_right;
 }
 
 bool operator!=(const Rectangle& r1, const Rectangle& r2) {

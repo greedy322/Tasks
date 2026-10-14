@@ -4,7 +4,7 @@
 class Rectangle {
 public:
 
-	Rectangle() = default;;
+	Rectangle() = default;
 	Rectangle(const double x, const double y, const double width, const double height);
 
 	double GetX() const { return x_; }
