@@ -28,6 +28,15 @@ public:
 
 	bool Remove(int value);
 
+	int RemoveAll(int value);
+
+	int GetMin() const;
+	int GetMax() const;
+
+	DynamicArray& operator+=(int value);
+
+	DynamicArray& operator+=(const DynamicArray& other);
+
 private:
 	int* data_ = nullptr;
 	int size_ = 0;
@@ -35,3 +44,11 @@ private:
 
 std::ostream& operator<<(std::ostream& os, const DynamicArray& arr);
 std::istream& operator>>(std::istream& is, DynamicArray& arr);
+
+DynamicArray operator+(const DynamicArray& arr, int value);
+DynamicArray operator+(int value, const DynamicArray& arr);
+
+DynamicArray operator+(const DynamicArray& lhs, const DynamicArray& rhs);
+
+bool operator==(const DynamicArray& lhs, const DynamicArray& rhs);
+bool operator!=(const DynamicArray& lhs, const DynamicArray& rhs);

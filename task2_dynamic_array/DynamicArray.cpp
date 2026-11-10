@@ -167,3 +167,143 @@ std::istream& operator>>(std::istream& is, DynamicArray& arr) {
 
     return is;
 }
+
+int DynamicArray::RemoveAll(int value) {
+    int count = 0;
+    for (int i = 0; i < size_; ++i) {
+        if (data_[i] == value) {
+            ++count;
+        }
+    }
+
+    if (count == 0) {
+        return 0;
+    }
+
+    int new_size = size_ - count;
+    if (new_size == 0) {
+        delete[] data_;
+        data_ = nullptr;
+        size_ = 0;
+        return count;
+    }
+
+    int* new_data = new int[new_size];
+    int dest = 0;
+    for (int i = 0; i < size_; ++i) {
+        if (data_[i] != value) {
+            new_data[dest++] = data_[i];
+        }
+    }
+
+    delete[] data_;
+    data_ = new_data;
+    size_ = new_size;
+
+    return count;
+}
+
+int DynamicArray::GetMin() const {
+    assert(size_ > 0);
+    int min_val = data_[0];
+    for (int i = 1; i < size_; ++i) {
+        if (data_[i] < min_val) {
+            min_val = data_[i];
+        }
+    }
+    return min_val;
+}
+
+int DynamicArray::GetMax() const {
+    assert(size_ > 0);
+    int max_val = data_[0];
+    for (int i = 1; i < size_; ++i) {
+        if (data_[i] > max_val) {
+            max_val = data_[i];
+        }
+    }
+    return max_val;
+}
+
+DynamicArray& DynamicArray::operator+=(int value) {
+    Insert(size_, value);
+    return *this;
+}
+
+DynamicArray& DynamicArray::operator+=(const DynamicArray& other) {
+    if (other.size_ == 0) {
+        return *this;
+    }
+
+    int new_size = size_ + other.size_;
+    int* new_data = new int[new_size];
+
+    for (int i = 0; i < size_; ++i) {
+        new_data[i] = data_[i];
+    }
+    for (int i = 0; i < other.size_; ++i) {
+        new_data[size_ + i] = other.data_[i];
+    }
+
+    delete[] data_;
+    data_ = new_data;
+    size_ = new_size;
+
+    return *this;
+}
+
+std::ostream& operator<<(std::ostream& os, const DynamicArray& arr) {
+    os << "[";
+    for (int i = 0; i < arr.GetSize(); ++i) {
+        os << arr[i] << (i + 1 < arr.GetSize() ? ", " : "");
+    }
+    os << "]";
+    return os;
+}
+
+std::istream& operator>>(std::istream& is, DynamicArray& arr) {
+    int count = 0;
+    if (!(is >> count) || count < 0) {
+        return is;
+    }
+
+    for (int i = 0; i < count; ++i) {
+        int val = 0;
+        is >> val;
+        arr.Insert(arr.GetSize(), val);
+    }
+
+    return is;
+}
+
+DynamicArray operator+(const DynamicArray& arr, int value) {
+    DynamicArray result = arr;
+    result += value;
+    return result;
+}
+
+DynamicArray operator+(int value, const DynamicArray& arr) {
+    return arr + value;
+}
+
+DynamicArray operator+(const DynamicArray& lhs, const DynamicArray& rhs) {
+    DynamicArray result = lhs;
+    result += rhs;
+    return result;
+}
+
+bool operator==(const DynamicArray& lhs, const DynamicArray& rhs) {
+    if (lhs.GetSize() != rhs.GetSize()) {
+        return false;
+    }
+    for (int i = 0; i < lhs.GetSize(); ++i) {
+        if (lhs[i] != rhs[i]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool operator!=(const DynamicArray& lhs, const DynamicArray& rhs) {
+    return !(lhs == rhs);
+}
