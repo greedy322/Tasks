@@ -23,6 +23,12 @@ DynamicArray::DynamicArray(const DynamicArray& other) {
     }
 }
 
+DynamicArray::DynamicArray(DynamicArray&& other) noexcept
+    : data_(other.data_), size_(other.size_) {
+    other.data_ = nullptr;
+    other.size_ = 0;
+}
+
 DynamicArray::~DynamicArray() {
     delete[] data_;
     data_ = nullptr;
@@ -42,6 +48,17 @@ DynamicArray& DynamicArray::operator=(const DynamicArray& other) {
                 data_[i] = other.data_[i];
             }
         }
+    }
+    return *this;
+}
+
+DynamicArray& DynamicArray::operator=(DynamicArray&& other) noexcept {
+    if (this != &other) {
+        delete[] data_;
+        data_ = other.data_;
+        size_ = other.size_;
+        other.data_ = nullptr;
+        other.size_ = 0;
     }
     return *this;
 }
@@ -144,30 +161,6 @@ bool DynamicArray::Remove(int value) {
     return RemoveAt(idx);
 }
 
-std::ostream& operator<<(std::ostream& os, const DynamicArray& arr) {
-    os << "[";
-    for (int i = 0; i < arr.GetSize(); ++i) {
-        os << arr[i] << (i + 1 < arr.GetSize() ? ", " : "");
-    }
-    os << "]";
-    return os;
-}
-
-std::istream& operator>>(std::istream& is, DynamicArray& arr) {
-    int count = 0;
-    if (!(is >> count) || count < 0) {
-        return is;
-    }
-
-    for (int i = 0; i < count; ++i) {
-        int val = 0;
-        is >> val;
-        arr.Insert(arr.GetSize(), val);
-    }
-
-    return is;
-}
-
 int DynamicArray::RemoveAll(int value) {
     int count = 0;
     for (int i = 0; i < size_; ++i) {
@@ -223,6 +216,53 @@ int DynamicArray::GetMax() const {
         }
     }
     return max_val;
+}
+
+DynamicArray::iterator DynamicArray::Insert(iterator pos, int value) {
+    int index = static_cast<int>(pos.ptr_ - data_);
+    assert(index >= 0 && index <= size_);
+    Insert(index, value);
+    return iterator(data_ + index);
+}
+
+DynamicArray::iterator DynamicArray::Erase(iterator pos) {
+    int index = static_cast<int>(pos.ptr_ - data_);
+    assert(index >= 0 && index < size_);
+    RemoveAt(index);
+    return iterator(data_ + index);
+}
+
+DynamicArray::iterator DynamicArray::Erase(iterator first, iterator last) {
+    int start_idx = static_cast<int>(first.ptr_ - data_);
+    int end_idx = static_cast<int>(last.ptr_ - data_);
+    assert(start_idx >= 0 && start_idx <= end_idx && end_idx <= size_);
+
+    int count = end_idx - start_idx;
+    if (count == 0) {
+        return first;
+    }
+
+    int new_size = size_ - count;
+    if (new_size == 0) {
+        delete[] data_;
+        data_ = nullptr;
+        size_ = 0;
+        return end();
+    }
+
+    int* new_data = new int[new_size];
+    for (int i = 0; i < start_idx; ++i) {
+        new_data[i] = data_[i];
+    }
+    for (int i = end_idx; i < size_; ++i) {
+        new_data[i - count] = data_[i];
+    }
+
+    delete[] data_;
+    data_ = new_data;
+    size_ = new_size;
+
+    return iterator(data_ + start_idx);
 }
 
 DynamicArray& DynamicArray::operator+=(int value) {
