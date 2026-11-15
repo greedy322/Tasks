@@ -1,6 +1,11 @@
 #pragma once
 #include <iostream>
 
+struct Point {
+	double x;
+	double y;
+};
+
 class Rectangle {
 public:
 

@@ -1,12 +1,12 @@
 #include <iostream>
 #include "Rectangle.h"
 
-int main() 
+int main()
 {
 	std::cout << "Testing Rectangle: \n\n";
 
-	Rectangle r1(0.0, 4.0, 4.0, 4.0);
-	Rectangle r2(2.0, 6.0, 4.0, 4.0);
+	Rectangle r1(0.0, 2.0, 5.0, 5.0);
+	Rectangle r2(1.0, 1.0, 2.0, 2.0);
 	Rectangle r3(10.0, 10.0, 2.0, 2.0);
 	Rectangle r4(1.0, 1.0, 4.0, 3.0);
 
@@ -35,7 +35,8 @@ int main()
 		<< (r1.IntersectsLine(0.0, 1.0, -2.0) ? "yes" : "no") << "\n";
 
 	std::cout << "r1 intersects line (y = 10): "
-		<< (r1.IntersectsLine(0.0, 1.0, -10.0) ? "yes" : "no") << "\n";
+		<< (r1.IntersectsLine(0.0, 1.0, -10.0) ? "yes" : "no") << "\n\n";
 
 	return 0;
 }
+
