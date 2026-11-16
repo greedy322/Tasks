@@ -371,3 +371,5 @@ FodyWeavers.xsd
 # Visual C++ project files
 *.vcxproj
 *.vcxproj.filters
+dataset_*.txt
+*.csv
