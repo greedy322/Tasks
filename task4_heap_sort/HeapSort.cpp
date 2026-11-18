@@ -1,4 +1,5 @@
 #include "HeapSort.h"
+#include <algorithm>
 
 bool IsSorted(const int* arr, int size) {
     if (arr == nullptr || size <= 1) return true;
@@ -28,4 +29,23 @@ void Sift(int* a, int n, int i) {
         j = 2 * i + 1;
     }
     a[i] = x;
+}
+
+void BuildHeap(int* a, int n) {
+    for (int i = n / 2 - 1; i >= 0; --i) {
+        Sift(a, n, i);
+    }
+}
+
+void HeapSort(int* a, int n) {
+    if (a == nullptr || n <= 1) return;
+    BuildHeap(a, n);
+    for (int i = n - 1; i > 0; --i) {
+        std::swap(a[0], a[i]);
+        Sift(a, i, 0);
+    }
+}
+
+void HeapSort(std::vector<int>& arr) {
+    HeapSort(arr.data(), static_cast<int>(arr.size()));
 }
